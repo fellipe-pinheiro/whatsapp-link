@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Link WhatsApp</title>
+  <meta name="description" content="Crie links personalizados para WhatsApp com mensagem pré-definida. Gere seu link wa.me em segundos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1e2530;
+      --border: #30363d;
+      --green: #25d366;
+      --green-dark: #128c7e;
+      --green-light: #34eb83;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,.45);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 28px 24px 20px;
+      position: relative;
+    }
+
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.35);
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg { width: 26px; height: 26px; fill: #fff; }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--green), var(--green-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      font-size: .8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 24px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 16px auto 40px;
+      padding: 0 24px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* ── FORM ── */
+    label { display: block; font-size: .875rem; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+
+    .field { margin-bottom: 20px; }
+
+    .phone-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .flag-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: .95rem;
+      padding: 0 10px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s;
+      flex-shrink: 0;
+    }
+
+    .flag-select:focus { border-color: var(--green); }
+
+    input[type="tel"],
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: .95rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color .25s, box-shadow .25s;
+      resize: none;
+    }
+
+    input[type="tel"]:focus,
+    textarea:focus,
+    input[type="text"]:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(37,211,102,.15);
+    }
+
+    textarea { min-height: 160px; line-height: 1.6; border-top-left-radius: 0; border-top-right-radius: 0; border-top: none; }
+
+    .char-count {
+      text-align: right;
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── FORMATTING TOOLBAR ── */
+    .fmt-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 10px 10px 0 0;
+      padding: 6px 8px;
+      flex-wrap: wrap;
+    }
+
+    .fmt-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .fmt-btn:hover {
+      background: rgba(255,255,255,.07);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .fmt-btn.active {
+      background: rgba(37,211,102,.12);
+      border-color: rgba(37,211,102,.4);
+      color: var(--green);
+    }
+
+    .fmt-sep {
+      width: 1px; height: 18px;
+      background: var(--border);
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .fmt-label {
+      font-size: .67rem;
+      color: var(--text-muted);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    /* WA formatted text in preview */
+    .wa-bubble-text b   { font-weight: 700; }
+    .wa-bubble-text i   { font-style: italic; }
+    .wa-bubble-text s   { text-decoration: line-through; }
+    .wa-bubble-text code {
+      font-family: 'Courier New', monospace;
+      font-size: .8em;
+      background: rgba(0,0,0,.25);
+      border-radius: 3px;
+      padding: 1px 4px;
+    }
+
+    /* ── LINK OUTPUT ── */
+    .link-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 8px;
+    }
+
+    .link-box span {
+      flex: 1;
+      font-size: .85rem;
+      color: var(--accent);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .8rem;
+      font-family: inherit;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .btn-copy:hover { border-color: var(--green); color: var(--green); }
+
+    .btn-copy.copied { border-color: var(--green); color: var(--green); background: rgba(37,211,102,.08); }
+
+    /* ── BUTTONS ── */
+    .btn-group { display: flex; gap: 10px; margin-top: 22px; }
+
+    .btn {
+      flex: 1;
+      padding: 13px 16px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(37,211,102,.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(37,211,102,.45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .btn-outline:hover { border-color: var(--text-muted); color: var(--text); }
+
+    /* ── PREVIEW PANEL ── */
+    .preview-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Phone mockup */
+    .phone-frame {
+      background: #1a1a2e;
+      border: 3px solid #2d2d4e;
+      border-radius: 36px;
+      padding: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.04);
+      position: relative;
+      flex: 1;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-notch {
+      width: 80px; height: 8px;
+      background: #2d2d4e;
+      border-radius: 10px;
+      margin: 0 auto 12px;
+    }
+
+    /* WA chat area */
+    .wa-chat {
+      flex: 1;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wa-header {
+      background: #075e54;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wa-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .wa-contact { flex: 1; }
+    .wa-contact-name { font-size: .85rem; font-weight: 600; color: #fff; }
+    .wa-contact-status { font-size: .68rem; color: rgba(255,255,255,.6); }
+
+    .wa-body {
+      flex: 1;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(37,211,102,.04) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background-color: #0b141a;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 200px;
+    }
+
+    .wa-bubble-wrap {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .wa-bubble {
+      background: #005c4b;
+      border-radius: 10px 0px 10px 10px;
+      padding: 8px 12px;
+      max-width: 85%;
+      position: relative;
+    }
+
+    .wa-bubble::after {
+      content: '';
+      position: absolute;
+      top: 0; right: -8px;
+      border-width: 0 0 10px 10px;
+      border-style: solid;
+      border-color: transparent transparent transparent #005c4b;
+    }
+
+    .wa-bubble-text {
+      font-size: .82rem;
+      color: #e9edef;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .wa-bubble-text.empty {
+      color: rgba(233,237,239,.35);
+      font-style: italic;
+    }
+
+    .wa-bubble-time {
+      font-size: .65rem;
+      color: rgba(233,237,239,.55);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    .wa-input-bar {
+      background: #1f2c34;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wa-fake-input {
+      flex: 1;
+      background: #2a3942;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: .78rem;
+      color: rgba(233,237,239,.3);
+    }
+
+    .wa-send-btn {
+      width: 34px; height: 34px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .wa-send-btn svg { width: 16px; height: 16px; fill: #fff; }
+
+    .mobile-inline-preview {
+      display: none;
+      margin-bottom: 16px;
+    }
+
+    /* QR Code area */
+    .qr-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #qr-canvas {
+      border-radius: 8px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+    .qr-info h3 { font-size: .9rem; font-weight: 600; margin-bottom: 4px; }
+    .qr-info p { font-size: .78rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── EMPTY STATE ── */
+    .empty-bubble {
+      text-align: center;
+      color: rgba(233,237,239,.2);
+      font-size: .8rem;
+      padding: 20px 10px;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--green);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: .875rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .3s;
+      z-index: 1000;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: 10px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .preview-panel {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 750px) {
+      header {
+        padding: 22px 16px 16px;
+        align-items: flex-start;
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+        line-height: 1.2;
+      }
+
+      header p {
+        position: static;
+        transform: none;
+        margin-left: 56px;
+        margin-top: 2px;
+        white-space: normal;
+        line-height: 1.3;
+      }
+
+      main {
+        gap: 14px;
+        margin: 8px auto 24px;
+        padding: 0 12px;
+      }
+
+      .card {
+        border-radius: 14px;
+        padding: 16px;
+      }
+
+      .card-title {
+        margin-bottom: 14px;
+      }
+
+      .field {
+        margin-bottom: 16px;
+      }
+
+      .mobile-inline-preview {
+        display: block;
+      }
+
+      .phone-row {
+        gap: 6px;
+      }
+
+      .flag-select {
+        min-width: 98px;
+        padding: 0 8px;
+      }
+
+      .fmt-toolbar {
+        padding: 6px;
+        gap: 4px;
+      }
+
+      .fmt-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .fmt-label {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 4px;
+        text-align: right;
+      }
+
+      textarea {
+        min-height: 140px;
+      }
+
+      .link-box {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .link-box span {
+        white-space: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        text-overflow: clip;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-group {
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .btn {
+        width: 100%;
+        min-height: 46px;
+      }
+
+      .preview-panel {
+        display: none;
+      }
+
+      .phone-frame {
+        min-height: 50vh;
+        max-height: 50vh;
+        border-radius: 30px;
+        padding: 10px;
+      }
+
+      .phone-notch {
+        margin-bottom: 8px;
+      }
+
+      .wa-body {
+        min-height: 0;
+      }
+
+      .qr-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .toast {
+        width: calc(100% - 24px);
+        border-radius: 12px;
+        text-align: center;
+        bottom: 16px;
+        padding: 11px 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      header {
+        gap: 10px;
+      }
+
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-icon svg {
+        width: 23px;
+        height: 23px;
+      }
+
+      header h1 {
+        font-size: 1.05rem;
+      }
+
+      header p {
+        margin-left: 50px;
+        font-size: .75rem;
+      }
+
+      .flag-select {
+        min-width: 92px;
+        font-size: .9rem;
+      }
+
+      input[type="tel"],
+      textarea,
+      input[type="text"] {
+        font-size: .9rem;
+      }
+
+      .wa-bubble {
+        max-width: 92%;
+      }
+
+      .mobile-inline-preview .card {
+        padding: 12px;
+      }
+
+      .mobile-inline-preview .card-title {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.126 1.524 5.862L.057 23.5l5.807-1.525A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.213-3.448.906.921-3.36-.234-.373A9.818 9.818 0 0 1 12 2.182c5.423 0 9.818 4.395 9.818 9.818S17.423 21.818 12 21.818z"/>
+    </svg>
+  </div>
+  <h1>Gerador de Link WhatsApp</h1>
+  <p>Crie seu link wa.me com mensagem personalizada</p>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <!-- FORM CARD -->
+  <div class="card">
+    <div class="card-title">📋 Configure seu link</div>
+
+    <div class="field">
+      <label for="phone">Número do WhatsApp</label>
+      <div class="phone-row">
+        <select class="flag-select" id="country-code" title="Código do país">
+          <option value="55">🇧🇷 +55</option>
+          <option value="1">🇺🇸 +1</option>
+          <option value="351">🇵🇹 +351</option>
+          <option value="44">🇬🇧 +44</option>
+          <option value="49">🇩🇪 +49</option>
+          <option value="34">🇪🇸 +34</option>
+          <option value="54">🇦🇷 +54</option>
+          <option value="56">🇨🇱 +56</option>
+          <option value="57">🇨🇴 +57</option>
+          <option value="52">🇲🇽 +52</option>
+        </select>
+        <input type="tel" id="phone" placeholder="11 99999-9999" maxlength="20" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="message">Mensagem pré-definida</label>
+
+      <div class="mobile-inline-preview">
+        <div class="card" style="padding:14px;">
+          <div class="card-title">📱 Preview da mensagem</div>
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="wa-chat">
+              <div class="wa-header">
+                <div class="wa-avatar">😊</div>
+                <div class="wa-contact">
+                  <div class="wa-contact-name" data-preview-number>+55 ...</div>
+                  <div class="wa-contact-status">online</div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white" opacity=".7">
+                  <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </div>
+
+              <div class="wa-body">
+                <div class="wa-bubble-wrap" data-bubble-wrap>
+                  <div class="empty-bubble">
+                    Sua mensagem aparecerá aqui ✨
+                  </div>
+                </div>
+              </div>
+
+              <div class="wa-input-bar">
+                <div class="wa-fake-input">Digite uma mensagem...</div>
+                <div class="wa-send-btn">
+                  <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formatting toolbar -->
+      <div class="fmt-toolbar" id="fmt-toolbar">
+        <button class="fmt-btn" id="fmt-bold"      onclick="applyFmt('bold')"          title="Negrito (*texto*)"><b>B</b></button>
+        <button class="fmt-btn" id="fmt-italic"    onclick="applyFmt('italic')"        title="Itálico (_texto_)"><i>I</i></button>
+        <button class="fmt-btn" id="fmt-strike"    onclick="applyFmt('strike')"        title="Tachado (~texto~)"><s>S</s></button>
+        <button class="fmt-btn" id="fmt-mono"      onclick="applyFmt('mono')"          title="Monoespaçado (```texto```)" style="font-family:monospace;font-size:.75rem">&#60;&#47;&#62;</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" id="fmt-bullet"    onclick="applyFmt('bullet')"        title="Lista com marcador">• —</button>
+        <button class="fmt-btn" id="fmt-numbered"  onclick="applyFmt('numbered')"      title="Lista numerada" style="font-size:.7rem">1.</button>
+        <button class="fmt-btn" id="fmt-quote"     onclick="applyFmt('quote')"         title="Citação (> texto)" style="font-size:1rem">❝</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" id="fmt-newline"   onclick="applyFmt('newline')"       title="Nova linha">↵</button>
+        <span class="fmt-label">Formatação WhatsApp</span>
+      </div>
+
+      <textarea id="message" placeholder="Olá! Gostaria de mais informações sobre..." maxlength="1000"></textarea>
+      <div class="char-count"><span id="char-count">0</span>/1000</div>
+    </div>
+
+    <div class="field">
+      <label>Link gerado</label>
+      <div class="link-box">
+        <span id="generated-link">https://wa.me/</span>
+        <button class="btn-copy" id="btn-copy" onclick="copyLink()" title="Copiar link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copiar
+        </button>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="openLink()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        Abrir no WhatsApp
+      </button>
+      <button class="btn btn-outline" onclick="clearAll()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+        </svg>
+        Limpar
+      </button>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel">
+    <!-- Phone mockup -->
+    <div class="card" style="flex:1; padding:20px;">
+      <div class="card-title">📱 Preview da mensagem</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="wa-chat">
+          <div class="wa-header">
+            <div class="wa-avatar">😊</div>
+            <div class="wa-contact">
+              <div class="wa-contact-name" id="preview-number">+55 ...</div>
+              <div class="wa-contact-status">online</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white" opacity=".7">
+              <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+            </svg>
+          </div>
+
+          <div class="wa-body">
+            <div class="wa-bubble-wrap" id="bubble-wrap">
+              <div class="empty-bubble" id="empty-bubble">
+                Sua mensagem aparecerá aqui ✨
+              </div>
+            </div>
+          </div>
+
+          <div class="wa-input-bar">
+            <div class="wa-fake-input">Digite uma mensagem...</div>
+            <div class="wa-send-btn">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="qr-section">
+      <canvas id="qr-canvas" width="80" height="80"></canvas>
+      <div class="qr-info">
+        <h3>QR Code</h3>
+        <p>Escaneie o QR Code para abrir a conversa diretamente no WhatsApp. Atualiza automaticamente.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Link copiado!</div>
+
+<!-- QR Code library (pure JS, no external dependency for main feature) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+  // ─── Elements ───────────────────────────────────────────────
+  const phoneInput     = document.getElementById('phone');
+  const countryCode    = document.getElementById('country-code');
+  const messageInput   = document.getElementById('message');
+  const generatedLink  = document.getElementById('generated-link');
+  const charCount      = document.getElementById('char-count');
+  const previewNumbers = document.querySelectorAll('[data-preview-number], #preview-number');
+  const bubbleWraps    = document.querySelectorAll('[data-bubble-wrap], #bubble-wrap');
+  const toast          = document.getElementById('toast');
+
+  // ─── QR Code ────────────────────────────────────────────────
+  let qrInstance = null;
+
+  function buildQR(url) {
+    const canvas = document.getElementById('qr-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!url || url === 'https://wa.me/') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 80, 80);
+      ctx.fillStyle = '#cccccc';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('digite o', 40, 35);
+      ctx.fillText('número', 40, 47);
+      return;
+    }
+
+    // Use a hidden div to render QRCode.js then copy to canvas
+    const tmp = document.createElement('div');
+    tmp.style.cssText = 'position:absolute;left:-9999px;';
+    document.body.appendChild(tmp);
+
+    try {
+      new QRCode(tmp, {
+        text: url,
+        width: 80,
+        height: 80,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      setTimeout(() => {
+        const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+        if (img) {
+          const src = img.src || (img.tagName === 'CANVAS' ? img.toDataURL() : null);
+          if (src) {
+            const image = new Image();
+            image.onload = () => {
+              ctx.clearRect(0, 0, 80, 80);
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(0, 0, 80, 80);
+              ctx.drawImage(image, 0, 0, 80, 80);
+            };
+            image.src = src;
+          }
+        }
+        document.body.removeChild(tmp);
+      }, 100);
+    } catch(e) {
+      document.body.removeChild(tmp);
+    }
+  }
+
+  // ─── Link Generator ─────────────────────────────────────────
+  function getTime() {
+    const now = new Date();
+    return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  }
+
+  function updateAll() {
+    const digits   = phoneInput.value.replace(/\D/g, '');
+    const country  = countryCode.value;
+    const msg      = messageInput.value.trim();
+    const fullNum  = country + digits;
+
+    // Build link
+    let url = 'https://wa.me/';
+    if (digits) {
+      url += fullNum;
+      if (msg) url += '?text=' + encodeURIComponent(msg);
+    }
+    generatedLink.textContent = url;
+
+    // Preview number
+    const numberText = digits
+      ? ('+' + country + ' ' + phoneInput.value.trim())
+      : '+' + country + ' ...';
+    previewNumbers.forEach((el) => {
+      el.textContent = numberText;
+    });
+
+    // Preview bubble
+    const bubbleContent = msg
+      ? `
+        <div class="wa-bubble">
+          <div class="wa-bubble-text">${renderWaMarkdown(msg)}</div>
+          <div class="wa-bubble-time">${getTime()} ✓✓</div>
+        </div>`
+      : `<div class="empty-bubble">Sua mensagem aparecerá aqui ✨</div>`;
+
+    if (msg) {
+      bubbleWraps.forEach((el) => {
+        el.innerHTML = bubbleContent;
+      });
+    } else {
+      bubbleWraps.forEach((el) => {
+        el.innerHTML = bubbleContent;
+      });
+    }
+
+    // QR
+    buildQR(digits ? url : '');
+
+    // Char count
+    charCount.textContent = messageInput.value.length;
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // Render WhatsApp markdown → HTML for the preview bubble
+  function renderWaMarkdown(text) {
+    let s = escapeHtml(text);
+
+    // Monospace  ```text```  (must come before bold/italic so ` ``` ` isn't confused)
+    s = s.replace(/```([\s\S]*?)```/g, '<code>$1</code>');
+
+    // Bold  *text*
+    s = s.replace(/\*([^\*\n]+)\*/g, '<b>$1</b>');
+
+    // Italic  _text_
+    s = s.replace(/\_([^\_\n]+)\_/g, '<i>$1</i>');
+
+    // Strikethrough  ~text~
+    s = s.replace(/~([^~\n]+)~/g, '<s>$1</s>');
+
+    // Quote  > text  (whole line)
+    s = s.replace(/(^|\n)&gt; ?([^\n]*)/g,
+      '$1<span style="border-left:3px solid rgba(255,255,255,.35);padding-left:8px;color:rgba(233,237,239,.75);display:inline-block;margin:2px 0">$2</span>');
+
+    // Newlines
+    s = s.replace(/\n/g, '<br>');
+
+    return s;
+  }
+
+  // ─── Formatting toolbar logic ────────────────────────────────
+  function applyFmt(type) {
+    const ta    = messageInput;
+    const start = ta.selectionStart;
+    const end   = ta.selectionEnd;
+    const sel   = ta.value.substring(start, end);
+    const before = ta.value.substring(0, start);
+    const after  = ta.value.substring(end);
+
+    const placeholder = {
+      bold:     'texto',
+      italic:   'texto',
+      strike:   'texto',
+      mono:     'código',
+      bullet:   'item',
+      numbered: 'item',
+      quote:    'citação',
+      newline:  ''
+    }[type];
+
+    let insertion = '';
+    let cursorOffset = 0;
+
+    switch (type) {
+      case 'bold': {
+        const inner = sel || placeholder;
+        insertion   = `*${inner}*`;
+        cursorOffset = sel ? insertion.length : 1;
+        break;
+      }
+      case 'italic': {
+        const inner = sel || placeholder;
+        insertion   = `_${inner}_`;
+        cursorOffset = sel ? insertion.length : 1;
+        break;
+      }
+      case 'strike': {
+        const inner = sel || placeholder;
+        insertion   = `~${inner}~`;
+        cursorOffset = sel ? insertion.length : 1;
+        break;
+      }
+      case 'mono': {
+        const inner = sel || placeholder;
+        insertion   = '\`\`\`' + inner + '\`\`\`';
+        cursorOffset = sel ? insertion.length : 3;
+        break;
+      }
+      case 'bullet': {
+        const lines = (sel || placeholder).split('\n');
+        insertion   = lines.map(l => `- ${l}`).join('\n');
+        // prefix newline if not at start of line
+        if (start > 0 && ta.value[start-1] !== '\n') insertion = '\n' + insertion;
+        cursorOffset = insertion.length;
+        break;
+      }
+      case 'numbered': {
+        const lines = (sel || placeholder).split('\n');
+        insertion   = lines.map((l,i) => `${i+1}. ${l}`).join('\n');
+        if (start > 0 && ta.value[start-1] !== '\n') insertion = '\n' + insertion;
+        cursorOffset = insertion.length;
+        break;
+      }
+      case 'quote': {
+        const lines = (sel || placeholder).split('\n');
+        insertion   = lines.map(l => `> ${l}`).join('\n');
+        if (start > 0 && ta.value[start-1] !== '\n') insertion = '\n' + insertion;
+        cursorOffset = insertion.length;
+        break;
+      }
+      case 'newline': {
+        insertion    = '\n';
+        cursorOffset = 1;
+        break;
+      }
+    }
+
+    ta.value = before + insertion + after;
+    const newCursor = start + cursorOffset;
+    ta.setSelectionRange(newCursor, newCursor);
+    ta.focus();
+    updateAll();
+  }
+
+  // ─── Phone mask ─────────────────────────────────────────────
+  phoneInput.addEventListener('input', () => {
+    let v = phoneInput.value.replace(/\D/g, '');
+    if (v.length > 11) v = v.slice(0, 11);
+    // Brazilian mask
+    if (countryCode.value === '55') {
+      if (v.length <= 2) {
+        phoneInput.value = v;
+      } else if (v.length <= 6) {
+        phoneInput.value = v.slice(0,2) + ' ' + v.slice(2);
+      } else if (v.length <= 10) {
+        phoneInput.value = v.slice(0,2) + ' ' + v.slice(2,6) + '-' + v.slice(6);
+      } else {
+        phoneInput.value = v.slice(0,2) + ' ' + v.slice(2,7) + '-' + v.slice(7);
+      }
+    }
+    updateAll();
+  });
+
+  countryCode.addEventListener('change', () => {
+    phoneInput.value = '';
+    updateAll();
+  });
+
+  messageInput.addEventListener('input', updateAll);
+
+  // ─── Actions ────────────────────────────────────────────────
+  function copyLink() {
+    const link = generatedLink.textContent;
+    if (link === 'https://wa.me/') return;
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.getElementById('btn-copy');
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Copiado!`;
+      showToast('✓ Link copiado!');
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar`;
+      }, 2000);
+    });
+  }
+
+  function openLink() {
+    const link = generatedLink.textContent;
+    if (link === 'https://wa.me/') {
+      showToast('⚠️ Digite o número primeiro!');
+      phoneInput.focus();
+      return;
+    }
+    window.open(link, '_blank');
+  }
+
+  function clearAll() {
+    phoneInput.value = '';
+    messageInput.value = '';
+    updateAll();
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ─── Init ───────────────────────────────────────────────────
+  updateAll();
+
+  // Initialize empty QR
+  (function() {
+    const canvas = document.getElementById('qr-canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 80, 80);
+    ctx.fillStyle = '#cccccc';
+    ctx.font = '9px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('digite o', 40, 35);
+    ctx.fillText('número', 40, 47);
+  })();
+</script>
+</body>
+</html>
